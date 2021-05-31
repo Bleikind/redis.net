@@ -8,10 +8,11 @@ namespace Redis.NET
 {
     public partial class RedisSentinelClient
     {
+        // <param name="timeout">Connection timeout in milliseconds</param>
+
         /// <summary>
         /// Connect to the remote host
         /// </summary>
-        /// <param name="timeout">Connection timeout in milliseconds</param>
         /// <returns>True if connected</returns>
         public bool Connect(/*int timeout*/)
         {
