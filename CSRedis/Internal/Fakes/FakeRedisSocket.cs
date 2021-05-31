@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Redis.NET.Internal.Fakes
 {
-    class FakeRedisSocket : IRedisSocket
+    internal class FakeRedisSocket : IRedisSocket
     {
         bool _connected;
         readonly FakeStream _stream;

@@ -134,7 +134,7 @@ namespace Redis.NET
                 {
                     try
                     {
-                        if (!sentinel.Connect(timeout))
+                        if (!sentinel.Connect(/*timeout*/))
                         {
                             continue;
                         }
