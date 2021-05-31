@@ -6,8 +6,8 @@
     <ProjectGuid>{422A4579-8C59-4E92-8EB5-2A45C38D27FB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CSRedis.Tests</RootNamespace>
-    <AssemblyName>CSRedis.Tests</AssemblyName>
+    <RootNamespace>Redis.NET.Tests</RootNamespace>
+    <AssemblyName>Redis.NET.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -41,7 +41,16 @@
   <PropertyGroup Condition=" '$(APPVEYOR)' == '' ">
     <SignAssembly>true</SignAssembly>
     <DelaySign>true</DelaySign>
-    <AssemblyOriginatorKeyFile>..\csredis.pub.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\Redis.NET.pub.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>redis.net.pub.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DelaySign>false</DelaySign>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -77,10 +86,13 @@
     <Compile Include="TransactionTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CSRedis\Redis.NET.csproj">
+    <ProjectReference Include="..\Redis.NET\Redis.NET.csproj">
       <Project>{d35e185e-a7e1-41e1-846c-21944f56074f}</Project>
       <Name>Redis.NET</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="redis.net.pub.snk" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

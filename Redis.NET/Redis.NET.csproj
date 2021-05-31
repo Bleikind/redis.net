@@ -7,8 +7,8 @@
     <ProjectGuid>{D35E185E-A7E1-41E1-846C-21944F56074F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CSRedis</RootNamespace>
-    <AssemblyName>csredis</AssemblyName>
+    <RootNamespace>Redis.NET</RootNamespace>
+    <AssemblyName>Redis.NET</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -22,7 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\csredis.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\Redis.NET.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,7 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\csredis.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\Redis.NET.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -44,7 +44,13 @@
   <PropertyGroup Condition=" '$(APPVEYOR)' == '' ">
     <SignAssembly>true</SignAssembly>
     <DelaySign>true</DelaySign>
-    <AssemblyOriginatorKeyFile>..\csredis.pub.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\Redis.NET.pub.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>redis.net.pub.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -123,7 +129,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="CSRedis.nuspec" />
+    <None Include="Redis.NET.nuspec" />
+    <None Include="redis.net.pub.snk" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

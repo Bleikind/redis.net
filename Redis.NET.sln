@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Redis.NET", "CSRedis\Redis.NET.csproj", "{D35E185E-A7E1-41E1-846C-21944F56074F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Redis.NET", "Redis.NET\Redis.NET.csproj", "{D35E185E-A7E1-41E1-846C-21944F56074F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Redis.NET.Tests", "CSRedis.Tests\Redis.NET.Tests.csproj", "{422A4579-8C59-4E92-8EB5-2A45C38D27FB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Redis.NET.Tests", "Redis.NET.Tests\Redis.NET.Tests.csproj", "{422A4579-8C59-4E92-8EB5-2A45C38D27FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
