@@ -1,11 +1,7 @@
-﻿using CSRedis.Internal.IO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Threading.Tasks;
 
-namespace CSRedis.Internal.IO
+namespace Redis.NET.Internal.IO
 {
     interface IRedisAsyncCommandToken
     {
@@ -30,14 +26,8 @@ namespace CSRedis.Internal.IO
             _command = command;
         }
 
-        public void SetResult(RedisReader reader)
-        {
-            _tcs.SetResult(_command.Parse(reader));
-        }
+        public void SetResult(RedisReader reader) => _tcs.SetResult(_command.Parse(reader));
 
-        public void SetException(Exception e)
-        {
-            _tcs.SetException(e);
-        }
+        public void SetException(Exception e) => _tcs.SetException(e);
     }
 }

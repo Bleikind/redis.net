@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace CSRedis
+namespace Redis.NET
 {
     /// <summary>
     /// Interface for asyncronous RedisClient methods
@@ -17,9 +15,6 @@ namespace CSRedis
         /// <returns>True on success</returns>
         Task<bool> ConnectAsync();
 
-
-
-
         /// <summary>
         /// Call arbitrary redis command
         /// </summary>
@@ -27,13 +22,6 @@ namespace CSRedis
         /// <param name="args"></param>
         /// <returns></returns>
         Task<object> CallAsync(string command, params string[] args);
-
-
-
-
-
-
-
 
         #region Connection
         /// <summary>
@@ -43,9 +31,6 @@ namespace CSRedis
         /// <returns>Task associated with status message</returns>
         Task<string> AuthAsync(string password);
 
-
-
-
         /// <summary>
         /// Echo the given string
         /// </summary>
@@ -53,17 +38,11 @@ namespace CSRedis
         /// <returns>Task associated with echo response</returns>
         Task<string> EchoAsync(string message);
 
-
-
-
         /// <summary>
         /// Ping the server
         /// </summary>
         /// <returns>Task associated with status message</returns>
         Task<string> PingAsync();
-
-
-
 
         /// <summary>
         /// Close the connection
@@ -71,15 +50,12 @@ namespace CSRedis
         /// <returns>Task associated with status message</returns>
         Task<string> QuitAsync();
 
-
         /// <summary>
         /// Change the selected database for the current connection
         /// </summary>
         /// <param name="index">Zero-based database index</param>
         /// <returns>Status message</returns>
         Task<string> SelectAsync(int index);
-
-
 
         #endregion
 
@@ -91,9 +67,6 @@ namespace CSRedis
         /// <returns></returns>
         Task<long> DelAsync(params string[] keys);
 
-
-
-
         /// <summary>
         /// Return a serialized version of the value stored at the specified key
         /// </summary>
@@ -101,18 +74,12 @@ namespace CSRedis
         /// <returns></returns>
         Task<byte[]> DumpAsync(string key);
 
-
-
-
         /// <summary>
         /// Determine if a key exists
         /// </summary>
         /// <param name="key">Key to check</param>
         /// <returns></returns>
         Task<bool> ExistsAsync(string key);
-
-
-
 
         /// <summary>
         /// Set a key's time to live in seconds
@@ -122,9 +89,6 @@ namespace CSRedis
         /// <returns></returns>
         Task<bool> ExpireAsync(string key, int expiration);
 
-
-
-
         /// <summary>
         /// Set a key's time to live in seconds
         /// </summary>
@@ -132,9 +96,6 @@ namespace CSRedis
         /// <param name="expiration">Expiration in seconds</param>
         /// <returns></returns>
         Task<bool> ExpireAsync(string key, TimeSpan expiration);
-
-
-
 
         /// <summary>
         /// Set the expiration for a key (nearest second);
@@ -144,9 +105,6 @@ namespace CSRedis
         /// <returns></returns>
         Task<bool> ExpireAtAsync(string key, DateTime expirationDate);
 
-
-
-
         /// <summary>
         /// Set the expiration for a key as a UNIX timestamp
         /// </summary>
@@ -155,18 +113,12 @@ namespace CSRedis
         /// <returns></returns>
         Task<bool> ExpireAtAsync(string key, int timestamp);
 
-
-
-
         /// <summary>
         /// Find all keys matching the given pattern
         /// </summary>
         /// <param name="pattern">Pattern to match</param>
         /// <returns></returns>
         Task<string[]> KeysAsync(string pattern);
-
-
-
 
         /// <summary>
         /// Atomically transfer a key from a Redis instance to another one
@@ -179,9 +131,6 @@ namespace CSRedis
         /// <returns></returns>
         Task<string> MigrateAsync(string host, int port, string key, int destinationDb, int timeout);
 
-
-
-
         /// <summary>
         /// Atomically transfer a key from a Redis instance to another one
         /// </summary>
@@ -193,9 +142,6 @@ namespace CSRedis
         /// <returns></returns>
         Task<string> MigrateAsync(string host, int port, string key, int destinationDb, TimeSpan timeout);
 
-
-
-
         /// <summary>
         /// Move a key to another database
         /// </summary>
@@ -204,18 +150,12 @@ namespace CSRedis
         /// <returns></returns>
         Task<bool> MoveAsync(string key, int database);
 
-
-
-
         /// <summary>
         /// Get the number of references of the value associated with the specified key
         /// </summary>
         /// <param name="arguments">Subcommand arguments</param>
         /// <returns>The type of internal representation used to store the value at the specified key</returns>
         Task<string> ObjectEncodingAsync(params string[] arguments);
-
-
-
 
         /// <summary>
         /// Inspect the internals of Redis objects
@@ -225,18 +165,12 @@ namespace CSRedis
         /// <returns>Varies depending on subCommand</returns>
         Task<long?> ObjectAsync(RedisObjectSubCommand subCommand, params string[] arguments);
 
-
-
-
         /// <summary>
         /// Remove the expiration from a key
         /// </summary>
         /// <param name="key">Key to modify</param>
         /// <returns></returns>
         Task<bool> PersistAsync(string key);
-
-
-
 
         /// <summary>
         /// Set a key's time to live in milliseconds
@@ -246,9 +180,6 @@ namespace CSRedis
         /// <returns></returns>
         Task<bool> PExpireAsync(string key, TimeSpan expiration);
 
-
-
-
         /// <summary>
         /// Set a key's time to live in milliseconds
         /// </summary>
@@ -256,9 +187,6 @@ namespace CSRedis
         /// <param name="milliseconds">Expiration in milliseconds</param>
         /// <returns></returns>
         Task<bool> PExpireAsync(string key, long milliseconds);
-
-
-
 
         /// <summary>
         /// Set the expiration for a key (nearest millisecond);
@@ -268,9 +196,6 @@ namespace CSRedis
         /// <returns></returns>
         Task<bool> PExpireAtAsync(string key, DateTime date);
 
-
-
-
         /// <summary>
         /// Set the expiration for a key as a UNIX timestamp specified in milliseconds
         /// </summary>
@@ -279,9 +204,6 @@ namespace CSRedis
         /// <returns></returns>
         Task<bool> PExpireAtAsync(string key, long timestamp);
 
-
-
-
         /// <summary>
         /// Get the time to live for a key in milliseconds
         /// </summary>
@@ -289,17 +211,11 @@ namespace CSRedis
         /// <returns></returns>
         Task<long> PTtlAsync(string key);
 
-
-
-
         /// <summary>
         /// Return a random key from the keyspace
         /// </summary>
         /// <returns></returns>
         Task<string> RandomKeyAsync();
-
-
-
 
         /// <summary>
         /// Rename a key
@@ -309,9 +225,6 @@ namespace CSRedis
         /// <returns></returns>
         Task<string> RenameAsync(string key, string newKey);
 
-
-
-
         /// <summary>
         /// Rename a key, only if the new key does not exist
         /// </summary>
@@ -319,9 +232,6 @@ namespace CSRedis
         /// <param name="newKey">New key name</param>
         /// <returns></returns>
         Task<bool> RenameNxAsync(string key, string newKey);
-
-
-
 
         /// <summary>
         /// Create a key using the provided serialized value, previously obtained using dump
@@ -331,9 +241,6 @@ namespace CSRedis
         /// <param name="serializedValue">Serialized value from DUMP</param>
         /// <returns></returns>
         Task<string> RestoreAsync(string key, long ttl, string serializedValue);
-
-
-
 
         /// <summary>
         /// Sort the elements in a list, set or sorted set
@@ -347,9 +254,6 @@ namespace CSRedis
         /// <param name="get">Retrieve external keys</param>
         /// <returns></returns>
         Task<string[]> SortAsync(string key, long? offset = null, long? count = null, string by = null, RedisSortDir? dir = null, bool? isAlpha = null, params string[] get);
-
-
-
 
         /// <summary>
         /// Sort the elements in a list, set or sorted set, then store the result in a new list
@@ -365,9 +269,6 @@ namespace CSRedis
         /// <returns></returns>
         Task<long> SortAndStoreAsync(string key, string destination, long? offset = null, long? count = null, string by = null, RedisSortDir? dir = null, bool? isAlpha = null, params string[] get);
 
-
-
-
         /// <summary>
         /// Get the time to live for a key
         /// </summary>
@@ -375,18 +276,12 @@ namespace CSRedis
         /// <returns></returns>
         Task<long> TtlAsync(string key);
 
-
-
-
         /// <summary>
         /// Determine the type stored at key
         /// </summary>
         /// <param name="key">Key to check</param>
         /// <returns></returns>
         Task<string> TypeAsync(string key);
-
-
-
         #endregion
 
         #region Hashes

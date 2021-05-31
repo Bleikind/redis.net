@@ -1,24 +1,41 @@
 ﻿using System.Globalization;
 using System.Threading;
-using CSRedis.Internal;
+using Redis.NET.Internal;
 using System;
 using System.Text;
-using System.Threading.Tasks;
 using System.IO;
-using CSRedis.Internal.IO;
+using Redis.NET.Internal.IO;
 using System.Net;
+using Redis.NET.Event;
 
-namespace CSRedis
+namespace Redis.NET
 {
     /// <summary>
     /// Represents a client connection to a Redis server instance
     /// </summary>
     public partial class RedisClient : IRedisClientSync, IRedisClientAsync
     {
-        const int DefaultPort = 6379;
-        const bool DefaultSSL = false;
-        const int DefaultConcurrency = 1000;
-        const int DefaultBufferSize = 10240;
+        /// <summary>
+        /// The default port
+        /// </summary>
+        public static int DefaultPort { get; } = 6379;
+
+        /// <summary>
+        /// The default ssl setting
+        /// </summary>
+        public static bool DefaultSSL { get; } = false;
+
+        /// <summary>
+        /// The default concurrency value
+        /// </summary>
+        public static int DefaultConcurrency { get; } = 1000;
+
+        /// <summary>
+        /// The default buffer size
+        /// </summary>
+        public static int DefaultBufferSize { get; } = 10240;
+
+
         readonly RedisConnector _connector;
         readonly RedisTransaction _transaction;
         readonly SubscriptionListener _subscription;
@@ -280,59 +297,42 @@ namespace CSRedis
         /// <summary>
         /// Dispose all resources used by the current RedisClient
         /// </summary>
-        public void Dispose()
-        {
-            _connector.Dispose();
-        }
+        public void Dispose() => _connector.Dispose();
 
-        void OnMonitorReceived(object sender, RedisMonitorEventArgs obj)
-        {
-            if (MonitorReceived != null)
-                MonitorReceived(this, obj);
-        }
+        void OnMonitorReceived(object sender, RedisMonitorEventArgs obj) => MonitorReceived?.Invoke(this, obj);
 
-        void OnSubscriptionReceived(object sender, RedisSubscriptionReceivedEventArgs args)
-        {
-            if (SubscriptionReceived != null)
-                SubscriptionReceived(this, args);
-        }
+        void OnSubscriptionReceived(object sender, RedisSubscriptionReceivedEventArgs args) => SubscriptionReceived?.Invoke(this, args);
 
-        void OnSubscriptionChanged(object sender, RedisSubscriptionChangedEventArgs args)
-        {
-            if (SubscriptionChanged != null)
-                SubscriptionChanged(this, args);
-        }
+        void OnSubscriptionChanged(object sender, RedisSubscriptionChangedEventArgs args) => SubscriptionChanged?.Invoke(this, args);
 
-        void OnConnectionConnected(object sender, EventArgs args)
-        {
-            if (Connected != null)
-                Connected(this, args);
-        }
+        void OnConnectionConnected(object sender, EventArgs args) => Connected?.Invoke(this, args);
 
-        void OnTransactionQueued(object sender, RedisTransactionQueuedEventArgs args)
-        {
-            if (TransactionQueued != null)
-                TransactionQueued(this, args);
-        }
+        void OnTransactionQueued(object sender, RedisTransactionQueuedEventArgs args) => TransactionQueued?.Invoke(this, args);
 
         string GetHost()
         {
-            if (_connector.EndPoint is IPEndPoint)
-                return (_connector.EndPoint as IPEndPoint).Address.ToString();
-            else if (_connector.EndPoint is DnsEndPoint)
-                return (_connector.EndPoint as DnsEndPoint).Host;
-            else
-                return null;
+            switch (_connector.EndPoint)
+            {
+                case IPEndPoint _:
+                    return (_connector.EndPoint as IPEndPoint).Address.ToString();
+                case DnsEndPoint _:
+                    return (_connector.EndPoint as DnsEndPoint).Host;
+                default:
+                    return null;
+            }
         }
 
         int GetPort()
         {
-            if (_connector.EndPoint is IPEndPoint)
-                return (_connector.EndPoint as IPEndPoint).Port;
-            else if (_connector.EndPoint is DnsEndPoint)
-                return (_connector.EndPoint as DnsEndPoint).Port;
-            else
-                return -1;
+            switch (_connector.EndPoint)
+            {
+                case IPEndPoint _:
+                    return (_connector.EndPoint as IPEndPoint).Port;
+                case DnsEndPoint _:
+                    return (_connector.EndPoint as DnsEndPoint).Port;
+                default:
+                    return -1;
+            }
         }
     }
 }

@@ -1,16 +1,12 @@
-﻿using CSRedis.Internal.IO;
+﻿using Redis.NET.Internal.IO;
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CSRedis.Internal
+namespace Redis.NET.Internal
 {
     class RedisConnector
     {
@@ -23,28 +19,28 @@ namespace CSRedis.Internal
 
         public event EventHandler Connected;
 
-        public AsyncConnector Async { get { return _asyncConnector.Value; } }
-        public bool IsConnected { get { return _redisSocket.Connected; } }
-        public EndPoint EndPoint { get { return _endPoint; } }
-        public bool IsPipelined { get { return _io.IsPipelined; } }
+        public AsyncConnector Async { get => _asyncConnector.Value; }
+        public bool IsConnected { get => _redisSocket.Connected; }
+        public EndPoint EndPoint { get => _endPoint; }
+        public bool IsPipelined { get => _io.IsPipelined; }
         public int ReconnectAttempts { get; set; }
         public int ReconnectWait { get; set; }
-        public int ReceiveTimeout 
+        public int ReceiveTimeout
         {
-            get { return _redisSocket.ReceiveTimeout; }
-            set { _redisSocket.ReceiveTimeout = value; }
+            get => _redisSocket.ReceiveTimeout;
+            set => _redisSocket.ReceiveTimeout = value;
         }
-        public int SendTimeout 
+        public int SendTimeout
         {
-            get { return _redisSocket.SendTimeout; }
-            set { _redisSocket.SendTimeout = value; }
+            get => _redisSocket.SendTimeout;
+            set => _redisSocket.SendTimeout = value;
         }
         public Encoding Encoding
         {
-            get { return _io.Encoding; }
-            set { _io.Encoding = value; }
+            get => _io.Encoding;
+            set => _io.Encoding = value;
         }
-        
+
 
         public RedisConnector(EndPoint endPoint, IRedisSocket socket, int concurrency, int bufferSize)
         {
@@ -61,15 +57,14 @@ namespace CSRedis.Internal
             _redisSocket.Connect(_endPoint);
 
             if (_redisSocket.Connected)
+            {
                 OnConnected();
+            }
 
             return _redisSocket.Connected;
         }
 
-        public Task<bool> ConnectAsync()
-        {
-            return Async.ConnectAsync();
-        }
+        public Task<bool> ConnectAsync() => Async.ConnectAsync();
 
         public T Call<T>(RedisCommand<T> command)
         {
@@ -78,7 +73,9 @@ namespace CSRedis.Internal
             try
             {
                 if (IsPipelined)
+                {
                     return _io.Pipeline.Write(command);
+                }
 
                 _io.Writer.Write(command, _io.Stream);
                 return command.Parse(_io.Reader);
@@ -86,16 +83,16 @@ namespace CSRedis.Internal
             catch (IOException)
             {
                 if (ReconnectAttempts == 0)
+                {
                     throw;
+                }
+
                 Reconnect();
                 return Call(command);
             }
         }
 
-        public Task<T> CallAsync<T>(RedisCommand<T> command)
-        {
-            return Async.CallAsync(command);
-        }
+        public Task<T> CallAsync<T>(RedisCommand<T> command) => Async.CallAsync(command);
 
         public void Write(RedisCommand command)
         {
@@ -108,7 +105,10 @@ namespace CSRedis.Internal
             catch (IOException)
             {
                 if (ReconnectAttempts == 0)
+                {
                     throw;
+                }
+
                 Reconnect();
                 Write(command);
             }
@@ -125,7 +125,10 @@ namespace CSRedis.Internal
             catch (IOException)
             {
                 if (ReconnectAttempts == 0)
+                {
                     throw;
+                }
+
                 Reconnect();
                 return Read(func);
             }
@@ -143,7 +146,10 @@ namespace CSRedis.Internal
             catch (IOException)
             {
                 if (ReconnectAttempts == 0)
+                {
                     throw;
+                }
+
                 Reconnect();
                 Read(destination, bufferSize);
             }
@@ -166,7 +172,10 @@ namespace CSRedis.Internal
             catch (IOException)
             {
                 if (ReconnectAttempts == 0)
+                {
                     throw;
+                }
+
                 Reconnect();
                 return EndPipe();
             }
@@ -175,13 +184,16 @@ namespace CSRedis.Internal
         public void Dispose()
         {
             if (_asyncConnector.IsValueCreated)
+            {
                 _asyncConnector.Value.Dispose();
+            }
 
             _io.Dispose();
 
             if (_redisSocket != null)
+            {
                 _redisSocket.Dispose();
-
+            }
         }
 
         void Reconnect()
@@ -190,25 +202,23 @@ namespace CSRedis.Internal
             while (attempts++ < ReconnectAttempts || ReconnectAttempts == -1)
             {
                 if (Connect())
+                {
                     return;
+                }
 
                 Thread.Sleep(TimeSpan.FromMilliseconds(ReconnectWait));
             }
 
-            throw new IOException("Could not reconnect after " + attempts + " attempts");
+            throw new IOException($"Could not reconnect after {attempts} attempts");
         }
 
         void OnConnected()
         {
             _io.SetStream(_redisSocket.GetStream());
-            if (Connected != null)
-                Connected(this, new EventArgs());
+            Connected?.Invoke(this, new EventArgs());
         }
 
-        void OnAsyncConnected(object sender, EventArgs args)
-        {
-            OnConnected();
-        }
+        void OnAsyncConnected(object sender, EventArgs args) => OnConnected();
 
         AsyncConnector AsyncConnectorFactory()
         {
@@ -220,13 +230,17 @@ namespace CSRedis.Internal
         void ConnectIfNotConnected()
         {
             if (!IsConnected)
+            {
                 Connect();
+            }
         }
 
         void ExpectConnected()
         {
             if (!IsConnected)
+            {
                 throw new RedisClientException("Client is not connected");
+            }
         }
     }
 }

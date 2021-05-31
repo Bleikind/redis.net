@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Redis.NET.Event;
+using System;
 using System.Text;
 
-namespace CSRedis
+namespace Redis.NET
 {
     /// <summary>
     /// Common properties of the RedisClient

@@ -1,12 +1,6 @@
-﻿
-using CSRedis.Internal.IO;
-using CSRedis.Internal.Utilities;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Globalization;
-using System.IO;
-namespace CSRedis.Internal.Commands
+﻿using Redis.NET.Internal.IO;
+
+namespace Redis.NET.Internal.Commands
 {
     class RedisStatus : RedisCommand<string>
     {
@@ -14,25 +8,27 @@ namespace CSRedis.Internal.Commands
             : base(command, args)
         { }
 
-        public override string Parse(RedisReader reader)
-        {
-            return reader.ReadStatus();
-        }
+        public override string Parse(RedisReader reader) => reader.ReadStatus();
 
         public class Empty : RedisCommand<string>
         {
-            public Empty(string command, params object[] args)
-                : base(command, args)
+            public Empty(string command, params object[] args) : base(command, args)
             { }
+
             public override string Parse(RedisReader reader)
             {
                 RedisMessage type = reader.ReadType();
                 if ((int)type == -1)
-                    return String.Empty;
-                else if (type == RedisMessage.Error)
-                    throw new RedisException(reader.ReadStatus(false));
+                {
+                    return string.Empty;
+                }
 
-                throw new RedisProtocolException("Unexpected type: " + type);
+                else if (type == RedisMessage.Error)
+                {
+                    throw new RedisException(reader.ReadStatus(false));
+                }
+
+                throw new RedisProtocolException($"Unexpected type: {type}");
             }
         }
 
@@ -46,13 +42,14 @@ namespace CSRedis.Internal.Commands
             {
                 RedisMessage type = reader.ReadType();
                 if (type == RedisMessage.Status)
+                {
                     return reader.ReadStatus(false);
+                }
 
                 object[] result = reader.ReadMultiBulk(false);
-                if (result != null)
-                    throw new RedisProtocolException("Expecting null MULTI BULK response. Received: " + result.ToString());
-
-                return null;
+                return result != null
+                    ? throw new RedisProtocolException($"Expecting null MULTI BULK response. Received: {result}")
+                    : (string)null;
             }
         }
     }

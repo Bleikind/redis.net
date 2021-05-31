@@ -1,24 +1,17 @@
-﻿using CSRedis.Internal.IO;
+﻿using Redis.NET.Internal.IO;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
 
-namespace CSRedis.Internal
+namespace Redis.NET.Internal
 {
-    abstract class RedisListner<TResponse>
+    abstract class RedisListener<TResponse>
     {
         readonly RedisConnector _connection;
 
         public bool Listening { get; private set; }
-        protected RedisConnector Connection { get { return _connection; } }
+        protected RedisConnector Connection { get => _connection; }
 
-        public RedisListner(RedisConnector connection)
-        {
-            _connection = connection;
-        }
+        public RedisListener(RedisConnector connection) => _connection = connection;
 
         protected void Listen(Func<RedisReader, TResponse> func)
         {
@@ -33,22 +26,19 @@ namespace CSRedis.Internal
                 catch (IOException)
                 {
                     if (_connection.IsConnected)
+                    {
                         throw;
+                    }
+
                     break;
                 }
             } while (Continue());
             Listening = false;
         }
 
-        protected void Write<T>(RedisCommand<T> command)
-        {
-            _connection.Write(command);
-        }
+        protected void Write<T>(RedisCommand<T> command) => _connection.Write(command);
 
-        protected T Call<T>(RedisCommand<T> command)
-        {
-            return _connection.Call(command);
-        }
+        protected T Call<T>(RedisCommand<T> command) => _connection.Call(command);
 
         protected abstract void OnParsed(TResponse value);
         protected abstract bool Continue();

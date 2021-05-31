@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 
-namespace CSRedis.Internal.IO
+namespace Redis.NET.Internal.IO
 {
     class SocketPool : IDisposable
     {
@@ -25,36 +22,33 @@ namespace CSRedis.Internal.IO
         {
             Socket socket = Acquire();
             if (!socket.Connected)
+            {
                 socket.Connect(_endPoint);
+            }
+
             return socket;
         }
 
         public bool ConnectAsync(SocketAsyncEventArgs connectArgs, out Socket socket)
         {
             socket = Acquire();
-            if (socket.Connected)
-                return false;
-            return socket.ConnectAsync(connectArgs);
+            return !socket.Connected && socket.ConnectAsync(connectArgs);
         }
 
-        public void Release(Socket socket)
-        {
-            _pool.Push(socket);
-        }
+        public void Release(Socket socket) => _pool.Push(socket);
 
         public void Dispose()
         {
             foreach (var socket in _pool)
             {
-                System.Diagnostics.Debug.WriteLine("Disposing socket #{0}", socket.Handle);
+                System.Diagnostics.Debug.WriteLine($"Disposing socket #{socket.Handle}");
                 socket.Dispose();
             }
         }
 
         Socket Acquire()
         {
-            Socket socket;
-            if (!_pool.TryPop(out socket))
+            if (!_pool.TryPop(out Socket socket))
             {
                 Add();
                 return Acquire();
@@ -69,13 +63,17 @@ namespace CSRedis.Internal.IO
                 socket.Dispose();
                 return Acquire();
             }
+
             return socket;
         }
 
         void Add()
         {
             if (_pool.Count > _max)
+            {
                 throw new InvalidOperationException("Maximum sockets");
+            }
+
             _pool.Push(SocketFactory());
         }
 

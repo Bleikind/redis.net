@@ -1,24 +1,19 @@
-﻿
-using CSRedis.Internal.IO;
+﻿using Redis.NET.Internal.IO;
 using System;
 using System.ComponentModel;
-namespace CSRedis.Internal.Commands
+
+namespace Redis.NET.Internal.Commands
 {
     class RedisString : RedisCommand<string>
     {
-        public RedisString(string command, params object[] args)
-            : base(command, args)
+        public RedisString(string command, params object[] args) : base(command, args)
         { }
 
-        public override string Parse(RedisReader reader)
-        {
-            return reader.ReadBulkString();
-        }
+        public override string Parse(RedisReader reader) => reader.ReadBulkString();
 
         public class Nullable : RedisString
         {
-            public Nullable(string command, params object[] args)
-                : base(command, args)
+            public Nullable(string command, params object[] args) : base(command, args)
             { }
 
             public override string Parse(RedisReader reader)
@@ -33,29 +28,20 @@ namespace CSRedis.Internal.Commands
 
         public class Integer : RedisCommand<int>
         {
-            public Integer(string command, params object[] args)
-                : base(command, args)
+            public Integer(string command, params object[] args) : base(command, args)
             { }
 
-            public override int Parse(RedisReader reader)
-            {
-                return Int32.Parse(reader.ReadBulkString());
-            }
+            public override int Parse(RedisReader reader) => int.Parse(reader.ReadBulkString());
         }
 
         public class Converter<T> : RedisCommand<T>
         {
-            static Lazy<TypeConverter> converter
-                = new Lazy<TypeConverter>(() => TypeDescriptor.GetConverter(typeof(T)));
+            static readonly Lazy<TypeConverter> _converter = new Lazy<TypeConverter>(() => TypeDescriptor.GetConverter(typeof(T)));
 
-            public Converter(string command, params object[] args)
-                : base(command, args)
+            public Converter(string command, params object[] args) : base(command, args)
             { }
 
-            public override T Parse(RedisReader reader)
-            {
-                return (T)converter.Value.ConvertFromInvariantString(reader.ReadBulkString());
-            }
+            public override T Parse(RedisReader reader) => (T)_converter.Value.ConvertFromInvariantString(reader.ReadBulkString());
         }
     }
 }

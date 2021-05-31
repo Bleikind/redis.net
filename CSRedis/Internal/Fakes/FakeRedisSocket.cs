@@ -1,13 +1,10 @@
-﻿using CSRedis.Internal.IO;
-using System;
-using System.Collections.Generic;
+﻿using Redis.NET.Internal.IO;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-namespace CSRedis.Internal.Fakes
+namespace Redis.NET.Internal.Fakes
 {
     class FakeRedisSocket : IRedisSocket
     {
@@ -20,30 +17,25 @@ namespace CSRedis.Internal.Fakes
 
         public int SendTimeout { get; set; }
 
-        public FakeRedisSocket(params string[] responses)
-            : this(Encoding.UTF8, responses)
+        public FakeRedisSocket(params string[] responses) : this(Encoding.UTF8, responses)
         { }
 
-        public FakeRedisSocket(Encoding encoding, params string[] responses)
-            : this(ToBytes(encoding, responses))
+        public FakeRedisSocket(Encoding encoding, params string[] responses) : this(ToBytes(encoding, responses))
         { }
 
         public FakeRedisSocket(params byte[][] responses)
         {
             _stream = new FakeStream();
+
             foreach (var response in responses)
+            {
                 _stream.AddResponse(response);
+            }
         }
 
-        public void Connect(EndPoint endpoint)
-        {
-            _connected = true;
-        }
+        public void Connect(EndPoint endpoint) => _connected = true;
 
-        public bool ConnectAsync(SocketAsyncEventArgs args)
-        {
-            return false;
-        }
+        public bool ConnectAsync(SocketAsyncEventArgs args) => false;
 
         public bool SendAsync(SocketAsyncEventArgs args)
         {
@@ -51,10 +43,7 @@ namespace CSRedis.Internal.Fakes
             return false;
         }
 
-        public Stream GetStream()
-        {
-            return _stream;
-        }
+        public Stream GetStream() => _stream;
 
         public void Dispose()
         {
@@ -62,20 +51,17 @@ namespace CSRedis.Internal.Fakes
             _connected = false;
         }
 
-        public string GetMessage()
-        {
-            return GetMessage(Encoding.UTF8);
-        }
-        public string GetMessage(Encoding encoding)
-        {
-            return encoding.GetString(_stream.GetMessage());
-        }
+        public string GetMessage() => GetMessage(Encoding.UTF8);
+        public string GetMessage(Encoding encoding) => encoding.GetString(_stream.GetMessage());
 
         static byte[][] ToBytes(Encoding encoding, string[] strings)
         {
-            byte[][] set = new byte[strings.Length][];
-            for (int i = 0; i < strings.Length; i++)
+            var set = new byte[strings.Length][];
+            for (var i = 0; i < strings.Length; i++)
+            {
                 set[i] = encoding.GetBytes(strings[i]);
+            }
+
             return set;
         }
     }

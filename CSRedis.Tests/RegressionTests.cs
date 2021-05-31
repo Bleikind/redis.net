@@ -1,10 +1,10 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using CSRedis.Internal;
-using CSRedis.Internal.Fakes;
+using Redis.NET.Internal;
+using Redis.NET.Internal.Fakes;
 using System.Net;
 
-namespace CSRedis.Tests
+namespace Redis.NET.Tests
 {
     [TestClass]
     public class RegressionTests

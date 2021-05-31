@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CSRedis
+namespace Redis.NET
 {
     /// <summary>
     /// Represents a Redis server error reply
@@ -11,8 +11,7 @@ namespace CSRedis
         /// Instantiate a new instance of the RedisException class
         /// </summary>
         /// <param name="message">Server response</param>
-        public RedisException(string message)
-            : base(message)
+        public RedisException(string message) : base(message)
         { }
     }
 
@@ -25,8 +24,7 @@ namespace CSRedis
         /// Instantiate a new instance of the RedisProtocolException class
         /// </summary>
         /// <param name="message">Protocol violoation message</param>
-        public RedisProtocolException(string message)
-            : base(message)
+        public RedisProtocolException(string message) : base(message)
         { }
     }
 
@@ -39,8 +37,7 @@ namespace CSRedis
         /// Instantiate a new instance of the RedisClientException class
         /// </summary>
         /// <param name="message">Exception message</param>
-        public RedisClientException(string message)
-            : base(message)
+        public RedisClientException(string message) : base(message)
         { }
 
         /// <summary>
@@ -48,8 +45,7 @@ namespace CSRedis
         /// </summary>
         /// <param name="message">Exception message</param>
         /// <param name="inner">Inner exception</param>
-        public RedisClientException(string message, Exception inner)
-            : base(message, inner)
+        public RedisClientException(string message, Exception inner) : base(message, inner)
         { }
     }
 }

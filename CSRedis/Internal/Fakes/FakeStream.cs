@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 
-namespace CSRedis.Internal.Fakes
+namespace Redis.NET.Internal.Fakes
 {
     class FakeStream : MemoryStream
     {
@@ -17,15 +15,9 @@ namespace CSRedis.Internal.Fakes
             _messages = new Queue<byte[]>();
         }
 
-        public void AddResponse(byte[] response)
-        {
-            _responses.Enqueue(response);
-        }
+        public void AddResponse(byte[] response) => _responses.Enqueue(response);
 
-        public byte[] GetMessage()
-        {
-            return _messages.Dequeue();
-        }
+        public byte[] GetMessage() => _messages.Dequeue();
 
         public override void Write(byte[] buffer, int offset, int count)
         {
@@ -41,8 +33,6 @@ namespace CSRedis.Internal.Fakes
                 Position -= next.Length;
             }
         }
-
-        
 
         // todo: use Monitor.Wait() to simulate blocking thread on Read()
     }

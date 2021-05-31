@@ -1,11 +1,9 @@
-﻿using CSRedis.Internal.IO;
+﻿using Redis.NET.Internal.IO;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 
-namespace CSRedis.Internal
+namespace Redis.NET.Internal
 {
     class RedisPipeline : IDisposable
     {
@@ -30,13 +28,10 @@ namespace CSRedis.Internal
         {
             _writer.Write(command, _buffer);
             _parsers.Enqueue(() => command.Parse(_reader));
-            return default(T);
+            return default;
         }
 
-        public void Begin()
-        {
-            Active = true;
-        }
+        public void Begin() => Active = true;
 
         public object[] Flush()
         {
@@ -45,15 +40,15 @@ namespace CSRedis.Internal
 
             object[] results = new object[_parsers.Count];
             for (int i = 0; i < results.Length; i++)
+            {
                 results[i] = _parsers.Dequeue()();
+            }
+
             _buffer.SetLength(0);
             Active = false;
             return results;
         }
 
-        public void Dispose()
-        {
-            _buffer.Dispose();
-        }
+        public void Dispose() => _buffer.Dispose();
     }
 }

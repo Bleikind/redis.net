@@ -1,8 +1,8 @@
-﻿using CSRedis.Internal.Commands;
+﻿using Redis.NET.Internal.Commands;
 using System;
 using System.Collections.Generic;
 
-namespace CSRedis
+namespace Redis.NET
 {
     public partial class RedisClient
     {
@@ -11,10 +11,7 @@ namespace CSRedis
         /// </summary>
         /// <param name="timeout">Connection timeout in milliseconds</param>
         /// <returns>True if connected</returns>
-        public bool Connect(int timeout)
-        {
-            return _connector.Connect(); // TODO timeout
-        }
+        public bool Connect(int timeout) => _connector.Connect(); // TODO timeout
 
         /// <summary>
         /// Call arbitrary Redis command
@@ -22,24 +19,27 @@ namespace CSRedis
         /// <param name="command">Command name</param>
         /// <param name="args">Command arguments</param>
         /// <returns>Redis object</returns>
-        public object Call(string command, params string[] args)
-        {
-            return Write(RedisCommands.Call(command, args));
-        }
+        public object Call(string command, params string[] args) => Write(RedisCommands.Call(command, args));
 
         T Write<T>(RedisCommand<T> command)
         {
             if (_transaction.Active)
+            {
                 return _transaction.Write(command);
+            }
             else if (_monitor.Listening)
-                return default(T);
+            {
+                return default;
+            }
             else if (_streaming)
             {
                 _connector.Write(command);
-                return default(T);
+                return default;
             }
             else
+            {
                 return _connector.Call(command);
+            }
         }
 
         #region Connection
@@ -48,29 +48,20 @@ namespace CSRedis
         /// </summary>
         /// <param name="password">Redis server password</param>
         /// <returns>Status message</returns>
-        public string Auth(string password)
-        {
-            return Write(RedisCommands.Auth(password));
-        }
+        public string Auth(string password) => Write(RedisCommands.Auth(password));
 
         /// <summary>
         /// Echo the given string
         /// </summary>
         /// <param name="message">Message to echo</param>
         /// <returns>Message</returns>
-        public string Echo(string message)
-        {
-            return Write(RedisCommands.Echo(message));
-        }
+        public string Echo(string message) => Write(RedisCommands.Echo(message));
 
         /// <summary>
         /// Ping the server
         /// </summary>
         /// <returns>Status message</returns>
-        public string Ping()
-        {
-            return Write(RedisCommands.Ping());
-        }
+        public string Ping() => Write(RedisCommands.Ping());
 
         /// <summary>
         /// Close the connection

@@ -1,14 +1,11 @@
-﻿using CSRedis.Internal.IO;
+﻿using Redis.NET.Internal.IO;
 using System;
-using System.ComponentModel;
-using System.IO;
 
-namespace CSRedis.Internal.Commands
+namespace Redis.NET.Internal.Commands
 {
     class RedisTuple : RedisCommand<Tuple<string, string>>
     {
-        public RedisTuple(string command, params object[] args)
-            : base(command, args)
+        public RedisTuple(string command, params object[] args) : base(command, args)
         { }
 
         public override Tuple<string, string> Parse(RedisReader reader)
@@ -30,27 +27,19 @@ namespace CSRedis.Internal.Commands
                 _command2 = command2;
             }
 
-            protected Tuple<T1, T2> Create(RedisReader reader)
-            {
-                return Tuple.Create(_command1.Parse(reader), _command2.Parse(reader));
-            }
+            protected Tuple<T1, T2> Create(RedisReader reader) => Tuple.Create(_command1.Parse(reader), _command2.Parse(reader));
 
             public class Repeating : Generic<T1, T2>
             {
-                public Repeating(RedisCommand<T1> command1, RedisCommand<T2> command2, string command, params object[] args)
-                    : base(command1, command2, command, args)
+                public Repeating(RedisCommand<T1> command1, RedisCommand<T2> command2, string command, params object[] args) : base(command1, command2, command, args)
                 { }
 
-                public override Tuple<T1, T2> Parse(RedisReader reader)
-                {
-                    return Create(reader);
-                }
+                public override Tuple<T1, T2> Parse(RedisReader reader) => Create(reader);
             }
 
             public class Single : Generic<T1, T2>
             {
-                public Single(RedisCommand<T1> command1, RedisCommand<T2> command2, string command, params object[] args)
-                    : base(command1, command2, command, args)
+                public Single(RedisCommand<T1> command1, RedisCommand<T2> command2, string command, params object[] args) : base(command1, command2, command, args)
                 { }
 
                 public override Tuple<T1, T2> Parse(RedisReader reader)

@@ -1,8 +1,7 @@
-﻿using CSRedis.Internal.IO;
+﻿using Redis.NET.Internal.IO;
 using System;
-using System.IO;
 
-namespace CSRedis.Internal.Commands
+namespace Redis.NET.Internal.Commands
 {
     class RedisDate : RedisCommand<DateTime>
     {
@@ -12,10 +11,7 @@ namespace CSRedis.Internal.Commands
             : base(command, args)
         { }
 
-        public override DateTime Parse(RedisReader reader)
-        {
-            return FromTimestamp(reader.ReadInt());
-        }
+        public override DateTime Parse(RedisReader reader) => FromTimestamp(reader.ReadInt());
 
         public class Micro : RedisCommand<DateTime>
         {
@@ -28,37 +24,21 @@ namespace CSRedis.Internal.Commands
                 reader.ExpectType(RedisMessage.MultiBulk);
                 reader.ExpectSize(2);
 
-                int timestamp = Int32.Parse(reader.ReadBulkString());
-                int microseconds = Int32.Parse(reader.ReadBulkString());
+                var timestamp = int.Parse(reader.ReadBulkString());
+                var microseconds = int.Parse(reader.ReadBulkString());
 
                 return FromTimestamp(timestamp, microseconds);
             }
 
-            public static DateTime FromTimestamp(long timestamp, long microseconds)
-            {
-                return RedisDate.FromTimestamp(timestamp) + FromMicroseconds(microseconds);
-            }
-            
+            public static DateTime FromTimestamp(long timestamp, long microseconds) => RedisDate.FromTimestamp(timestamp) + FromMicroseconds(microseconds);
 
-            public static TimeSpan FromMicroseconds(long microseconds)
-            {
-                return TimeSpan.FromTicks(microseconds * (TimeSpan.TicksPerMillisecond / 1000));
-            }
+            public static TimeSpan FromMicroseconds(long microseconds) => TimeSpan.FromTicks(microseconds * (TimeSpan.TicksPerMillisecond / 1000));
 
-            public static long ToMicroseconds(TimeSpan span)
-            {
-                return span.Ticks / (TimeSpan.TicksPerMillisecond / 1000);
-            }
+            public static long ToMicroseconds(TimeSpan span) => span.Ticks / (TimeSpan.TicksPerMillisecond / 1000);
         }
 
-        public static DateTime FromTimestamp(long seconds)
-        {
-            return _epoch + TimeSpan.FromSeconds(seconds);
-        }
+        public static DateTime FromTimestamp(long seconds) => _epoch + TimeSpan.FromSeconds(seconds);
 
-        public static TimeSpan ToTimestamp(DateTime date)
-        {
-            return date - _epoch;
-        }
+        public static TimeSpan ToTimestamp(DateTime date) => date - _epoch;
     }
 }

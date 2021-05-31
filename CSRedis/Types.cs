@@ -1,7 +1,7 @@
 ﻿
 using System;
 using System.Runtime.Serialization;
-namespace CSRedis
+namespace Redis.NET
 {
     /// <summary>
     /// Sub-command used by Redis OBJECT command

@@ -77,9 +77,9 @@
     <Compile Include="TransactionTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CSRedis\CSRedis.csproj">
+    <ProjectReference Include="..\CSRedis\Redis.NET.csproj">
       <Project>{d35e185e-a7e1-41e1-846c-21944f56074f}</Project>
-      <Name>CSRedis</Name>
+      <Name>Redis.NET</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

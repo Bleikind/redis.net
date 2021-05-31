@@ -1,17 +1,11 @@
-﻿
-using CSRedis.Internal.IO;
-using CSRedis.Internal.Utilities;
+﻿using Redis.NET.Internal.IO;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Globalization;
-using System.IO;
-namespace CSRedis.Internal.Commands
+
+namespace Redis.NET.Internal.Commands
 {
     class RedisRoleCommand : RedisCommand<RedisRole>
     {
-        public RedisRoleCommand(string command, params object[] args)
-            : base(command, args)
+        public RedisRoleCommand(string command, params object[] args) : base(command, args)
         { }
 
         public override RedisRole Parse(RedisReader reader)
@@ -44,12 +38,13 @@ namespace CSRedis.Internal.Commands
                 reader.ExpectType(RedisMessage.MultiBulk);
                 reader.ExpectSize(3);
                 string ip = reader.ReadBulkString();
-                int port = Int32.Parse(reader.ReadBulkString());
-                int slave_offset = Int32.Parse(reader.ReadBulkString());
+                int port = int.Parse(reader.ReadBulkString());
+                int slave_offset = int.Parse(reader.ReadBulkString());
                 slaves[i] = new Tuple<string, int, int>(ip, port, slave_offset);
             }
             return new RedisMasterRole(role, offset, slaves);
         }
+
         static RedisSlaveRole ParseSlave(int num, string role, RedisReader reader)
         {
             reader.ExpectSize(5, num);
@@ -59,6 +54,7 @@ namespace CSRedis.Internal.Commands
             long data = reader.ReadInt();
             return new RedisSlaveRole(role, master_ip, port, state, data);
         }
+
         static RedisSentinelRole ParseSentinel(int num, string role, RedisReader reader)
         {
             reader.ExpectSize(2, num);

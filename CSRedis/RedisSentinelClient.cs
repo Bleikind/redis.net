@@ -1,23 +1,37 @@
-﻿using CSRedis.Internal;
-using CSRedis.Internal.Commands;
-using CSRedis.Internal.IO;
+﻿using Redis.NET.Event;
+using Redis.NET.Internal;
+using Redis.NET.Internal.IO;
 using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Runtime.Serialization;
 using System.Text;
 
-namespace CSRedis
+namespace Redis.NET
 {
     /// <summary>
     /// Represents a client connection to a Redis sentinel instance
     /// </summary>
     public partial class RedisSentinelClient : IDisposable
     {
-        const int DefaultPort = 26379;
-        const bool DefaultSSL = false;
-        const int DefaultConcurrency = 1000;
-        const int DefaultBufferSize = 1024;
+        /// <summary>
+        /// Default port setting
+        /// </summary>
+        public static int DefaultPort { get; } = 26379;
+
+        /// <summary>
+        /// Default ssl setting
+        /// </summary>
+        public static bool DefaultSSL { get; } = false;
+
+        /// <summary>
+        /// Default concurrency value
+        /// </summary>
+        public static int DefaultConcurrency { get; } = 1000;
+
+        /// <summary>
+        /// Default buffer size
+        /// </summary>
+        public static int DefaultBufferSize { get; } = 1024;
+
         readonly RedisConnector _connector;
         readonly SubscriptionListener _subscription;
 
@@ -139,45 +153,41 @@ namespace CSRedis
         public void Dispose()
         {
             if (_connector != null)
+            {
                 _connector.Dispose();
+            }
         }
 
-        void OnSubscriptionReceived(object sender, RedisSubscriptionReceivedEventArgs args)
-        {
-            if (SubscriptionReceived != null)
-                SubscriptionReceived(this, args);
-        }
+        void OnSubscriptionReceived(object sender, RedisSubscriptionReceivedEventArgs args) => SubscriptionReceived?.Invoke(this, args);
 
-        void OnSubscriptionChanged(object sender, RedisSubscriptionChangedEventArgs args)
-        {
-            if (SubscriptionChanged != null)
-                SubscriptionChanged(this, args);
-        }
+        void OnSubscriptionChanged(object sender, RedisSubscriptionChangedEventArgs args) => SubscriptionChanged?.Invoke(this, args);
 
-        void OnConnectionReconnected(object sender, EventArgs args)
-        {
-            if (Reconnected != null)
-                Reconnected(this, args);
-        }
+        void OnConnectionReconnected(object sender, EventArgs args) => Reconnected?.Invoke(this, args);
 
         string GetHost()
         {
-            if (_connector.EndPoint is IPEndPoint)
-                return (_connector.EndPoint as IPEndPoint).Address.ToString();
-            else if (_connector.EndPoint is DnsEndPoint)
-                return (_connector.EndPoint as DnsEndPoint).Host;
-            else
-                return null;
+            switch (_connector.EndPoint)
+            {
+                case IPEndPoint _:
+                    return (_connector.EndPoint as IPEndPoint).Address.ToString();
+                case DnsEndPoint _:
+                    return (_connector.EndPoint as DnsEndPoint).Host;
+                default:
+                    return null;
+            }
         }
 
         int GetPort()
         {
-            if (_connector.EndPoint is IPEndPoint)
-                return (_connector.EndPoint as IPEndPoint).Port;
-            else if (_connector.EndPoint is DnsEndPoint)
-                return (_connector.EndPoint as DnsEndPoint).Port;
-            else
-                return -1;
+            switch (_connector.EndPoint)
+            {
+                case IPEndPoint _:
+                    return (_connector.EndPoint as IPEndPoint).Port;
+                case DnsEndPoint _:
+                    return (_connector.EndPoint as DnsEndPoint).Port;
+                default:
+                    return -1;
+            }
         }
     }
 }

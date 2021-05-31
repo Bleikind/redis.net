@@ -6,47 +6,26 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.Serialization;
 
-namespace CSRedis.Internal.Utilities
+namespace Redis.NET.Internal.Utilities
 {
-    internal static class Serializer<T>
-        where T : class
+    internal static class Serializer<T> where T : class
     {
-        static readonly Lazy<Func<T, Dictionary<string, string>>>
-            _propertySerializer;
-        static readonly Lazy<Func<Dictionary<string, string>, T>>
-            _propertyDeserializer;
-        static readonly Lazy<Func<T, Dictionary<string, string>>>
-            _serializer;
-        static readonly Lazy<Func<Dictionary<string, string>, T>>
-            _deserializer;
+        static readonly Lazy<Func<T, Dictionary<string, string>>> _propertySerializer;
+        static readonly Lazy<Func<Dictionary<string, string>, T>> _propertyDeserializer;
+        static readonly Lazy<Func<T, Dictionary<string, string>>> _serializer;
+        static readonly Lazy<Func<Dictionary<string, string>, T>> _deserializer;
 
         static Serializer()
         {
-            _propertySerializer
-                = new Lazy<Func<T, Dictionary<string, string>>>(CompilePropertySerializer);
-            _propertyDeserializer
-                = new Lazy<Func<Dictionary<string, string>, T>>(CompilePropertyDeserializer);
-            _serializer
-                = new Lazy<Func<T, Dictionary<string, string>>>(CompileSerializer);
-            _deserializer
-                = new Lazy<Func<Dictionary<string, string>, T>>(CompileDeserializer);
+            _propertySerializer = new Lazy<Func<T, Dictionary<string, string>>>(CompilePropertySerializer);
+            _propertyDeserializer = new Lazy<Func<Dictionary<string, string>, T>>(CompilePropertyDeserializer);
+            _serializer = new Lazy<Func<T, Dictionary<string, string>>>(CompileSerializer);
+            _deserializer = new Lazy<Func<Dictionary<string, string>, T>>(CompileDeserializer);
         }
 
-        public static Dictionary<string, string> Serialize(T obj)
-        {
-            if (typeof(ISerializable).IsAssignableFrom(typeof(T)))
-                return _serializer.Value(obj);
-            else
-                return _propertySerializer.Value(obj);
-        }
+        public static Dictionary<string, string> Serialize(T obj) => typeof(ISerializable).IsAssignableFrom(typeof(T)) ? _serializer.Value(obj) : _propertySerializer.Value(obj);
 
-        public static T Deserialize(Dictionary<string, string> fields)
-        {
-            if (typeof(ISerializable).IsAssignableFrom(typeof(T)))
-                return _deserializer.Value(fields);
-            else
-                return _propertyDeserializer.Value(fields);
-        }
+        public static T Deserialize(Dictionary<string, string> fields) => typeof(ISerializable).IsAssignableFrom(typeof(T)) ? _deserializer.Value(fields) : _propertyDeserializer.Value(fields);
 
 
         static Func<T, Dictionary<string, string>> CompilePropertySerializer()
@@ -66,12 +45,11 @@ namespace CSRedis.Internal.Utilities
                     var prop_mi_to_string = x.PropertyType.GetMethod("ToString", new Type[0]);
                     var add_to_dict = Expression.Call(d, d_add, Expression.Constant(x.Name), Expression.Call(prop, prop_mi_to_string));
 
-                    if (x.PropertyType.IsValueType)
-                        return (Expression)add_to_dict;
-                    else
-                        return (Expression)Expression.IfThen(
+                    return x.PropertyType.IsValueType
+                        ? add_to_dict
+                        : Expression.IfThen(
                             Expression.Not(Expression.Equal(prop, Expression.Constant(null))),
-                            add_to_dict);
+                            add_to_dict) as Expression;
                 });
 
             // run this
@@ -94,13 +72,13 @@ namespace CSRedis.Internal.Utilities
             var d = Expression.Parameter(d_t, "d");
             var d_mi_try_get_value = d_t.GetMethod("TryGetValue");
 
-            var item_t = typeof(String);
+            var item_t = typeof(string);
             var item = Expression.Variable(item_t, "item");
 
             var tc_t = typeof(TypeConverter);
             var tc = Expression.Variable(tc_t, "tc");
             var tc_mi_can_convert_from = tc_t.GetMethod("CanConvertFrom", new[] { typeof(Type) });
-            var tc_mi_convert_from = tc_t.GetMethod("ConvertFrom", new[] { typeof(Object) });
+            var tc_mi_convert_from = tc_t.GetMethod("ConvertFrom", new[] { typeof(object) });
 
             var td_t = typeof(TypeDescriptor);
             var td_mi_get_converter = td_t.GetMethod("GetConverter", new[] { typeof(Type) });
@@ -166,7 +144,7 @@ namespace CSRedis.Internal.Utilities
             var enumerator_move_next = enumerator_t.GetMethod("MoveNext");
             var enumerator_name = Expression.Property(enumerator, "Name");
             var enumerator_value = Expression.Property(enumerator, "Value");
-            var mi_to_string = typeof(Object).GetMethod("ToString", new Type[0]);
+            var mi_to_string = typeof(object).GetMethod("ToString", new Type[0]);
             var exit_loop = Expression.Label("exit_loop");
             var body = Expression.Block(new[] { d, fc, info, ctx },
                 Expression.Assign(d, d_init),
@@ -189,8 +167,7 @@ namespace CSRedis.Internal.Utilities
                 d); // return
 
             // compile
-            return Expression.Lambda<Func<T, Dictionary<string, string>>>(body, o)
-                .Compile();
+            return Expression.Lambda<Func<T, Dictionary<string, string>>>(body, o).Compile();
         }
 
         static Func<Dictionary<string, string>, T> CompileDeserializer()
@@ -210,7 +187,7 @@ namespace CSRedis.Internal.Utilities
             var info = Expression.Variable(info_t, "info");
             var info_ctor = info_t.GetConstructor(new[] { typeof(Type), fc_t });
             var info_init = Expression.MemberInit(Expression.New(info_ctor, Expression.Constant(o_t), fc));
-            var info_mi_add_value = info_t.GetMethod("AddValue", new[] { typeof(String), typeof(Object) });
+            var info_mi_add_value = info_t.GetMethod("AddValue", new[] { typeof(string), typeof(object) });
 
             var ctx_t = typeof(StreamingContext);
             var ctx = Expression.Variable(ctx_t, "ctx");

@@ -1,15 +1,10 @@
-﻿using CSRedis.Internal.IO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Redis.NET.Internal.IO;
 
-namespace CSRedis.Internal.Commands
+namespace Redis.NET.Internal.Commands
 {
     class RedisSlowLogCommand : RedisCommand<RedisSlowLogEntry>
     {
-        public RedisSlowLogCommand(string command, object[] args)
-            : base(command, args)
+        public RedisSlowLogCommand(string command, object[] args) : base(command, args)
         { }
 
         public override RedisSlowLogEntry Parse(RedisReader reader)
@@ -22,7 +17,9 @@ namespace CSRedis.Internal.Commands
             reader.ExpectType(RedisMessage.MultiBulk);
             string[] arguments = new string[reader.ReadInt(false)];
             for (int i = 0; i < arguments.Length; i++)
+            {
                 arguments[i] = reader.ReadBulkString();
+            }
 
             return new RedisSlowLogEntry(id, RedisDate.FromTimestamp(timestamp), RedisDate.Micro.FromMicroseconds(microseconds), arguments);
         }

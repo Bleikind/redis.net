@@ -1,8 +1,7 @@
-﻿using CSRedis.Internal.IO;
-using System;
+﻿using Redis.NET.Internal.IO;
 using System.Globalization;
 
-namespace CSRedis.Internal.Commands
+namespace Redis.NET.Internal.Commands
 {
     class RedisFloat : RedisCommand<double>
     {
@@ -10,15 +9,9 @@ namespace CSRedis.Internal.Commands
             : base(command, args)
         { }
 
-        public override double Parse(RedisReader reader)
-        {
-            return FromString(reader.ReadBulkString());
-        }
+        public override double Parse(RedisReader reader) => FromString(reader.ReadBulkString());
 
-        static double FromString(string input)
-        {
-            return Double.Parse(input, NumberStyles.Float, CultureInfo.InvariantCulture);
-        }
+        static double FromString(string input) => double.Parse(input, NumberStyles.Float, CultureInfo.InvariantCulture);
 
         public class Nullable : RedisCommand<double?>
         {
@@ -26,13 +19,7 @@ namespace CSRedis.Internal.Commands
                 : base(command, args)
             { }
 
-            public override double? Parse(RedisReader reader)
-            {
-                string result = reader.ReadBulkString();
-                if (result == null)
-                    return null;
-                return RedisFloat.FromString(result);
-            }
+            public override double? Parse(RedisReader reader) => reader.ReadBulkString() == null ? null : (double?)FromString(reader.ReadBulkString());
         }
     }
 }

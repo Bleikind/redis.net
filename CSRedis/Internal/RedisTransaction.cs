@@ -1,11 +1,10 @@
-﻿using CSRedis.Internal.Commands;
+﻿using Redis.NET.Event;
+using Redis.NET.Internal.Commands;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace CSRedis.Internal
+namespace Redis.NET.Internal
 {
     class RedisTransaction
     {
@@ -42,7 +41,7 @@ namespace CSRedis.Internal
             OnTransactionQueued(command, response);
 
             _execCommand.AddParser(x => command.Parse(x));
-            return default(T);
+            return default;
         }
 
         public Task<T> WriteAsync<T>(RedisCommand<T> command)
@@ -65,13 +64,14 @@ namespace CSRedis.Internal
                 _connector.Call(_execCommand);
                 object[] response = _connector.EndPipe();
                 for (int i = 1; i < response.Length - 1; i++)
+                {
                     OnTransactionQueued(_pipeCommands[i - 1].Item1, _pipeCommands[i - 1].Item2, response[i - 1].ToString());
-                
-                object transaction_response = response[response.Length - 1];
-                if (!(transaction_response is object[]))
-                    throw new RedisProtocolException("Unexpected response");
+                }
 
-                return transaction_response as object[];
+                object transaction_response = response[response.Length - 1];
+                return !(transaction_response is object[])
+                    ? throw new RedisProtocolException("Unexpected response")
+                    : transaction_response as object[];
             }
 
             return _connector.Call(_execCommand);
@@ -98,15 +98,15 @@ namespace CSRedis.Internal
         void OnTransactionQueued<T>(RedisCommand<T> command, string response)
         {
             if (_connector.IsPipelined)
+            {
                 _pipeCommands.Add(Tuple.Create(command.Command, command.Arguments));
+            }
             else
+            {
                 OnTransactionQueued(command.Command, command.Arguments, response);
+            }
         }
 
-        void OnTransactionQueued(string command, object[] args, string response)
-        {
-            if (TransactionQueued != null)
-                TransactionQueued(this, new RedisTransactionQueuedEventArgs(response, command, args));
-        }
+        void OnTransactionQueued(string command, object[] args, string response) => TransactionQueued?.Invoke(this, new RedisTransactionQueuedEventArgs(response, command, args));
     }
 }

@@ -1,6 +1,6 @@
-﻿
-using CSRedis.Internal.IO;
-namespace CSRedis.Internal.Commands
+﻿using Redis.NET.Internal.IO;
+
+namespace Redis.NET.Internal.Commands
 {
     class RedisBytes : RedisCommand<byte[]>
     {
@@ -8,9 +8,6 @@ namespace CSRedis.Internal.Commands
             : base(command, args)
         { }
 
-        public override byte[] Parse(RedisReader reader)
-        {
-            return reader.ReadBulkBytes(true);
-        }
+        public override byte[] Parse(RedisReader reader) => reader.ReadBulkBytes(true);
     }
 }

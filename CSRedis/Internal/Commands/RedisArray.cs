@@ -1,10 +1,8 @@
-﻿using CSRedis.Internal.IO;
+﻿using Redis.NET.Internal.IO;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace CSRedis.Internal.Commands
+namespace Redis.NET.Internal.Commands
 {
     class RedisArray : RedisCommand<object[]>
     {
@@ -17,35 +15,36 @@ namespace CSRedis.Internal.Commands
         public override object[] Parse(RedisReader reader)
         {
             if (_parsers.Count == 0)
+            {
                 return reader.ReadMultiBulk(bulkAsString: true);
+            }
 
             reader.ExpectType(RedisMessage.MultiBulk);
             long count = reader.ReadInt(false);
             if (count != _parsers.Count)
-                throw new RedisProtocolException(String.Format("Expecting {0} array items; got {1}", _parsers.Count, count));
+            {
+                throw new RedisProtocolException(string.Format("Expecting {0} array items; got {1}", _parsers.Count, count));
+            }
 
             object[] results = new object[_parsers.Count];
             for (int i = 0; i < results.Length; i++)
+            {
                 results[i] = _parsers.Dequeue()(reader);
+            }
+
             return results;
         }
 
-        public void AddParser(Func<RedisReader, object> parser)
-        {
-            _parsers.Enqueue(parser);
-        }
+        public void AddParser(Func<RedisReader, object> parser) => _parsers.Enqueue(parser);
 
         public class Generic<T> : RedisCommand<T[]>
         {
             readonly RedisCommand<T> _memberCommand;
 
-            protected RedisCommand<T> MemberCommand { get { return _memberCommand; } }
+            protected RedisCommand<T> MemberCommand { get => _memberCommand; }
 
             public Generic(RedisCommand<T> memberCommand)
-                : base(memberCommand.Command, memberCommand.Arguments)
-            {
-                _memberCommand = memberCommand;
-            }
+                : base(memberCommand.Command, memberCommand.Arguments) => _memberCommand = memberCommand;
 
             public override T[] Parse(RedisReader reader)
             {
@@ -58,7 +57,10 @@ namespace CSRedis.Internal.Commands
             {
                 T[] array = new T[count];
                 for (int i = 0; i < array.Length; i++)
+                {
                     array[i] = _memberCommand.Parse(reader);
+                }
+
                 return array;
             }
         }
@@ -81,7 +83,10 @@ namespace CSRedis.Internal.Commands
                 long count = reader.ReadInt(false);
                 T[] array = new T[count];
                 for (int i = 0; i < array.Length; i++)
+                {
                     array[i] = _command.Parse(reader);
+                }
+
                 return array[_index];
             }
         }
@@ -103,7 +108,10 @@ namespace CSRedis.Internal.Commands
             {
                 var array = new Tuple<T1, T2>[count / 2];
                 for (int i = 0; i < count; i += 2)
+                {
                     array[i / 2] = MemberCommand.Parse(reader);
+                }
+
                 return array;
             }
         }

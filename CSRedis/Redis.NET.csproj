@@ -56,8 +56,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Events.cs" />
+    <Compile Include="Event\RedisMonitorEventArgs.cs" />
     <Compile Include="Internal\Commands\RedisArray.cs" />
+    <Compile Include="Internal\Commands\RedisBool.cs" />
+    <Compile Include="Internal\Commands\RedisBytes.cs" />
+    <Compile Include="Internal\Commands\RedisDate.cs" />
+    <Compile Include="Internal\Commands\RedisFloat.cs" />
+    <Compile Include="Internal\Commands\RedisHash.cs" />
     <Compile Include="Internal\Commands\RedisRoleCommand.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="Internal\Commands\RedisIsMasterDownByAddrCommand.cs" />
@@ -82,11 +87,6 @@
     <Compile Include="Internal\SubscriptionListener.cs" />
     <Compile Include="Internal\RedisTransaction.cs" />
     <Compile Include="Internal\Utilities\RedisArgs.cs" />
-    <Compile Include="Internal\Commands\RedisBool.cs" />
-    <Compile Include="Internal\Commands\RedisBytes.cs" />
-    <Compile Include="Internal\Commands\RedisDate.cs" />
-    <Compile Include="Internal\Commands\RedisFloat.cs" />
-    <Compile Include="Internal\Commands\RedisHash.cs" />
     <Compile Include="Internal\Commands\RedisInt.cs" />
     <Compile Include="Internal\Commands\RedisScanCommand.cs" />
     <Compile Include="Internal\Commands\RedisTuple.cs" />
@@ -112,6 +112,9 @@
     </Compile>
     <Compile Include="RedisSentinelManager.cs" />
     <Compile Include="Internal\Utilities\Serializer.cs" />
+    <Compile Include="Event\RedisSubscriptionChangedEventArgs.cs" />
+    <Compile Include="Event\RedisSubscriptionReceivedEventArgs.cs" />
+    <Compile Include="Event\RedisTransactionQueuedEventArgs.cs" />
     <Compile Include="Types.cs" />
   </ItemGroup>
   <ItemGroup>

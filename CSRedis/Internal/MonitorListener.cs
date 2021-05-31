@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Redis.NET.Event;
+using System;
 
-namespace CSRedis.Internal
+namespace Redis.NET.Internal
 {
-    class MonitorListener : RedisListner<object>
+    class MonitorListener : RedisListener<object>
     {
         public event EventHandler<RedisMonitorEventArgs> MonitorReceived;
 
-        public MonitorListener(RedisConnector connection)
-            : base(connection)
+        public MonitorListener(RedisConnector connection) : base(connection)
         { }
 
         public string Start()
@@ -20,20 +17,10 @@ namespace CSRedis.Internal
             return status;
         }
 
-        protected override void OnParsed(object value)
-        {
-            OnMonitorReceived(value);
-        }
+        protected override void OnParsed(object value) => OnMonitorReceived(value);
 
-        protected override bool Continue()
-        {
-            return Connection.IsConnected;
-        }
+        protected override bool Continue() => Connection.IsConnected;
 
-        void OnMonitorReceived(object message)
-        {
-            if (MonitorReceived != null)
-                MonitorReceived(this, new RedisMonitorEventArgs(message));
-        }
+        void OnMonitorReceived(object message) => MonitorReceived?.Invoke(this, new RedisMonitorEventArgs(message));
     }
 }

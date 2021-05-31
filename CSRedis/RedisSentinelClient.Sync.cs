@@ -1,10 +1,10 @@
-﻿using CSRedis.Internal.Commands;
+﻿using Redis.NET.Internal.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace CSRedis
+namespace Redis.NET
 {
     public partial class RedisSentinelClient
     {
@@ -13,7 +13,7 @@ namespace CSRedis
         /// </summary>
         /// <param name="timeout">Connection timeout in milliseconds</param>
         /// <returns>True if connected</returns>
-        public bool Connect(int timeout)
+        public bool Connect(/*int timeout*/)
         {
             return _connector.Connect(); // TODO: timeout
         }

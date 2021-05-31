@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace CSRedis
+namespace Redis.NET
 {
     public partial class RedisClient
     {

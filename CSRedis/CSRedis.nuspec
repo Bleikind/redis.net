@@ -7,11 +7,11 @@
     <authors>$author$</authors>
     <owners>$author$</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
-    <projectUrl>https://github.com/ctstone/csredis</projectUrl>
+    <projectUrl>https://github.com/Bleikind/Redis.NET</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>https://github.com/ctstone/csredis/blob/master/CHANGELOG.md</releaseNotes>
-    <copyright>Copyright 2014</copyright>
+    <releaseNotes>https://github.com/Bleikind/Redis.NET/blob/master/CHANGELOG.md</releaseNotes>
+    <copyright>Copyright 2021</copyright>
     <tags>Redis Sentinel Async NoSQL</tags>
   </metadata>
 </package>

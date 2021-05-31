@@ -1,7 +1,6 @@
-﻿using CSRedis.Internal.IO;
-using System.IO;
+﻿using Redis.NET.Internal.IO;
 
-namespace CSRedis.Internal.Commands
+namespace Redis.NET.Internal.Commands
 {
     class RedisBool : RedisCommand<bool>
     {
@@ -9,9 +8,6 @@ namespace CSRedis.Internal.Commands
             : base(command, args)
         { }
 
-        public override bool Parse(RedisReader reader)
-        {
-            return reader.ReadInt() == 1;
-        }
+        public override bool Parse(RedisReader reader) => reader.ReadInt() == 1;
     }
 }

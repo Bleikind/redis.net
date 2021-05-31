@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 
-namespace CSRedis.Internal.IO
+namespace Redis.NET.Internal.IO
 {
     class RedisIO : IDisposable
     {
@@ -18,7 +16,7 @@ namespace CSRedis.Internal.IO
         public Encoding Encoding { get; set; }
         public RedisPipeline Pipeline { get { return GetOrThrow(_pipeline); } }
         public Stream Stream { get { return GetOrThrow(_stream); } }
-        public bool IsPipelined { get { return Pipeline == null ? false : Pipeline.Active; } }
+        public bool IsPipelined { get { return Pipeline != null && Pipeline.Active; } }
 
         public RedisIO()
         {
@@ -29,7 +27,9 @@ namespace CSRedis.Internal.IO
         public void SetStream(Stream stream)
         {
             if (_stream != null)
+            {
                 _stream.Dispose();
+            }
 
             _stream = new BufferedStream(stream);
             _reader = new RedisReader(this);
@@ -39,16 +39,16 @@ namespace CSRedis.Internal.IO
         public void Dispose()
         {
             if (_pipeline != null)
+            {
                 _pipeline.Dispose();
+            }
+
             if (_stream != null)
+            {
                 _stream.Dispose();
+            }
         }
 
-        static T GetOrThrow<T>(T obj)
-        {
-            if (obj == null)
-                throw new RedisClientException("Connection was not opened");
-            return obj;
-        }
+        static T GetOrThrow<T>(T obj) => obj == null ? throw new RedisClientException("Connection was not opened") : obj;
     }
 }

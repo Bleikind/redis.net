@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace CSRedis
+namespace Redis.NET
 {
     /// <summary>
     /// Interface for syncronous RedisClient methods

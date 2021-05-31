@@ -1,5 +1,5 @@
-﻿using CSRedis.Internal;
-using CSRedis.Internal.Fakes;
+﻿using Redis.NET.Internal;
+using Redis.NET.Internal.Fakes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CSRedis.Tests
+namespace Redis.NET.Tests
 {
     [TestClass]
     public class PubSubTests
