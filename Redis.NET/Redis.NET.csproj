@@ -47,7 +47,7 @@
     <AssemblyOriginatorKeyFile>..\Redis.NET.pub.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>redis.net.pub.snk</AssemblyOriginatorKeyFile>

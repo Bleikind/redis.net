@@ -332,7 +332,11 @@ namespace Redis.NET
             if (weights != null && weights.Length > 0)
             {
                 args.Add("WEIGHTS");
-                args.AddRange((IEnumerable<object>) (from weight in weights select weight));
+                foreach(var weight in weights)
+                {
+                    args.Add(weight);
+                }
+
             }
 
             if (aggregate != null)
@@ -418,7 +422,10 @@ namespace Redis.NET
             if (weights != null && weights.Length > 0)
             {
                 args.Add("WEIGHTS");
-                args.AddRange((IEnumerable<object>) (from weight in weights select weight));
+                foreach(var weight in weights)
+                {
+                    args.Add(weight);
+                }
             }
             if (aggregate != null)
             {

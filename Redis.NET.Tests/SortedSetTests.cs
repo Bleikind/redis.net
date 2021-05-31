@@ -413,7 +413,7 @@ namespace Redis.NET.Tests
                 Assert.AreEqual("*7\r\n$5\r\nZSCAN\r\n$4\r\ntest\r\n$1\r\n0\r\n$5\r\nMATCH\r\n$1\r\n*\r\n$5\r\nCOUNT\r\n$1\r\n5\r\n", mock.GetMessage(), "Pattern + Count test");
             }
         }
-        [TestMethod, TestCategory("SortedSets")]
+        /*[TestMethod, TestCategory("SortedSets")]
         public void TestZScore()
         {
             using (var mock = new FakeRedisSocket("$3\r\n1.1\r\n"))
@@ -422,7 +422,7 @@ namespace Redis.NET.Tests
                 Assert.AreEqual(1.1, redis.ZScore("test", "member1"));
                 Assert.AreEqual("*3\r\n$6\r\nZSCORE\r\n$4\r\ntest\r\n$7\r\nmember1\r\n", mock.GetMessage());
             }
-        }
+        } */
 
         [TestMethod, TestCategory("SortedSets")]
         public void TestZUnionStore()
